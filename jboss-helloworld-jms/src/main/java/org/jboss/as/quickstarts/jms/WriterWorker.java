@@ -16,6 +16,7 @@
  */
 package org.jboss.as.quickstarts.jms;
 
+import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -73,10 +74,8 @@ public class WriterWorker implements Runnable {
 	private void sendMessage() throws Exception, NamingException,
 			JMSException {
 
-		int count = Integer.parseInt(System.getProperty("message.count",
-				DEFAULT_MESSAGE_COUNT));
-		String content = System.getProperty("message.content", DEFAULT_MESSAGE)
-				+ "(" + messageCounter + ")";
+		int count = PropertyReader.getTotalMessageCount();
+		String content = PropertyReader.getMessageContent()	+ "(" + messageCounter + ")";
 
 		sender.sendMessage(count, content);
 	}

@@ -27,7 +27,7 @@ public class HelloWorldJMSClient {
 
 	// Set up all the default values
 	private static final String DEFAULT_MESSAGE = "Hello, World!";
-	private static final String DEFAULT_MESSAGE_COUNT = "1";
+	private static final int DEFAULT_MESSAGE_COUNT = 1;
 
 	private MessageSender sender = null;
 	private MessageReader reader= null;
@@ -44,17 +44,15 @@ public class HelloWorldJMSClient {
 			JMSException {
 
 		try {
-			int count = Integer.parseInt(System.getProperty("message.count",
-					DEFAULT_MESSAGE_COUNT));
-			String content = System.getProperty("message.content",
-					DEFAULT_MESSAGE);
+			int count = PropertyReader.getTotalMessageCount();
+			String content = PropertyReader.getMessageContent();
 
 			jmsSession.setup();
 			sender = new MessageSender(jmsSession);
 			reader = new MessageReader(jmsSession);
 
 			sender.sendMessage(count, content);
-			//reader.readMessage(count);
+			reader.readMessage(count);
 		} catch (Exception e) {
 			handleException(e);
 		} finally {

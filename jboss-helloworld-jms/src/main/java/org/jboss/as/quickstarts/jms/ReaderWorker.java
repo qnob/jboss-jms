@@ -69,9 +69,7 @@ public class ReaderWorker implements Runnable {
 
 	private void readMessage() throws Exception, NamingException, JMSException {
 
-		int count = Integer.parseInt(System.getProperty("message.count",
-				DEFAULT_MESSAGE_COUNT));
-
+		int count = PropertyReader.getTotalMessageCount();
 		reader.readMessage(count);
 	}
 
