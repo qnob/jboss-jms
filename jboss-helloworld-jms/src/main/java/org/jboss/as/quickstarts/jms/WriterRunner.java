@@ -21,6 +21,7 @@ public class WriterRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		executorService.shutdown();
 		try {
 			executorService.awaitTermination(5, TimeUnit.MINUTES);
 		} catch (InterruptedException e1) {

@@ -61,11 +61,9 @@ public class ConcurrentWriterAndReaderRunner {
 		readerThreadExecutorService.shutdown();
 
 		try {
-			while (!readerThreadExecutorService.awaitTermination(1,
-					TimeUnit.SECONDS)) {
-			}
+			readerThreadExecutorService.awaitTermination(5, TimeUnit.MINUTES);
 		} catch (InterruptedException e1) {
-			log.severe("Interrupted reader threads.");
+			log.severe("Reader threads interrupted after timeout.");
 		}
 		log.info("Finished all reader threads");
 
@@ -90,11 +88,9 @@ public class ConcurrentWriterAndReaderRunner {
 		writerThreadExecutorService.shutdown();
 
 		try {
-			while (!writerThreadExecutorService.awaitTermination(1,
-					TimeUnit.SECONDS)) {
-			}
+			writerThreadExecutorService.awaitTermination(5, TimeUnit.MINUTES);
 		} catch (InterruptedException e1) {
-			log.severe("Interrupted writer threads.");
+			log.severe("Writer threads interrupted after timeout.");
 		}
 
 		log.info("Finished all writer threads");

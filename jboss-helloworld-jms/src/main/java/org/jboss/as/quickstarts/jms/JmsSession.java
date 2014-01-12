@@ -37,8 +37,9 @@ public class JmsSession {
 	private Context context = null;
 
 	public void setup() throws NamingException, JMSException {
-		if (context == null) {
+		if (context != null) {
 			log.severe("JMS Session already initialized. Ignoring further setup method calls.");
+			return;
 		}
 		// Set up the context for the JNDI lookup
 		final Properties env = new Properties();
