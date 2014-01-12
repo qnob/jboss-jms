@@ -29,32 +29,29 @@ public class ReaderWorker implements Runnable {
 	private static final Logger log = Logger.getLogger(ReaderWorker.class
 			.getName());
 
-	private static final String DEFAULT_MESSAGE_COUNT = "1";
-
 	private MessageReader reader = null;
 
 	private JmsSession jmsSession = new JmsSession();
-	
-	private Random random = new Random();
-	
 
-	public ReaderWorker() throws JMSException, NamingException {
+	private Random random = new Random();
+
+	private int messageCount;
+
+	public ReaderWorker(int messageCount) throws JMSException, NamingException {
 		this.jmsSession = new JmsSession();
 		this.jmsSession.setup();
 		this.reader = new MessageReader(jmsSession);
+		this.messageCount = messageCount;
 	}
 
 	@Override
 	public void run() {
-		try {
-
-			Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
-		} catch (Exception e) {
-			handleException(e);
-		}
 
 		try {
-			readMessage();
+			for (int i = 0; i < messageCount; i++) {
+				Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
+				reader.readMessage();
+			}
 		} catch (Exception e) {
 			handleException(e);
 		} finally {
@@ -67,15 +64,9 @@ public class ReaderWorker implements Runnable {
 
 	}
 
-	private void readMessage() throws Exception, NamingException, JMSException {
-
-		int count = PropertyReader.getTotalMessageCount();
-		reader.readMessage(count);
-	}
-
 	private void handleException(Exception e) {
 		log.log(Level.SEVERE, e.getMessage(), e);
-		
+
 	}
 
 }

@@ -16,9 +16,8 @@ public class MessageReader {
 		this.consumer = jmsSession.createConsumer();
 	}
 
-	public void readMessage(int count) throws JMSException {
+	public void readMessage() throws JMSException {
 		// Then receive the same number of messages that were sent
-		for (int i = 0; i < count; i++) {
 			TextMessage message = (TextMessage) consumer.receive(5000);
 			String currentThreadName = Thread.currentThread().getName();
 			if (message == null) {
@@ -26,7 +25,6 @@ public class MessageReader {
 			} else {
 				log.info(currentThreadName + " : Received message with content " + message.getText());
 			}
-		}
 	}
 
 }

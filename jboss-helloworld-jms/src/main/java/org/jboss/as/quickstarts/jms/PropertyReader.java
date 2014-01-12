@@ -3,7 +3,7 @@ package org.jboss.as.quickstarts.jms;
 public class PropertyReader {
 
 	private static final String DEFAULT_MESSAGE = "Hello, World!";
-	private static final int DEFAULT_MESSAGE_COUNT = 1;
+	private static final int DEFAULT_MESSAGE_COUNT = 3;
 
 	public static int get(String key, int defaultValue) {
 

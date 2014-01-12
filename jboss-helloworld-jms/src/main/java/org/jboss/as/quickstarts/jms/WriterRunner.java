@@ -1,32 +1,29 @@
 package org.jboss.as.quickstarts.jms;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class WriterRunner {
-	private static final int INTERVAL_IN_MILLISECONDS = 1000;
-
+	private static final Logger log = Logger.getLogger(WriterRunner.class
+			.getName());
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ScheduledExecutorService scheduledExecutorService = Executors
-				.newScheduledThreadPool(1, new WorkerThreadFactory("Writer"));
+		int totalMessageCount = PropertyReader.getTotalMessageCount();
+		ExecutorService executorService = Executors
+				.newSingleThreadExecutor(new WorkerThreadFactory("Writer"));
 
-		for (int i = 0; i < 3; i++) {
-
-			try {
-
-				scheduledExecutorService.schedule(new WriterWorker(i), i
-						* INTERVAL_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			executorService.execute(new WriterWorker(totalMessageCount));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		scheduledExecutorService.shutdown();
-		while (!scheduledExecutorService.isTerminated()) {
+		executorService.shutdown();
+		while (!executorService.isTerminated()) {
 		}
-		System.out.println("Finished all threads");
+		
+		log.info("Finished all threads");
 	}
 }

@@ -16,7 +16,6 @@
  */
 package org.jboss.as.quickstarts.jms;
 
-import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -29,36 +28,32 @@ public class WriterWorker implements Runnable {
 	private static final Logger log = Logger.getLogger(WriterWorker.class
 			.getName());
 
-	// Set up all the default values
-	private static final String DEFAULT_MESSAGE = "Hello, World!";
-	private static final String DEFAULT_MESSAGE_COUNT = "1";
-
 	private MessageSender sender = null;
 
 	private JmsSession jmsSession = new JmsSession();
 
-	private int messageCounter;
-	
-	private Random random=new Random(); 
+	private int messageCount;
 
-	public WriterWorker(int messageCounter) throws JMSException, NamingException {
+	private Random random = new Random();
+
+	public WriterWorker(int messageCount) throws JMSException, NamingException {
 		this.jmsSession = new JmsSession();
 		jmsSession.setup();
 		this.sender = new MessageSender(jmsSession);
-		this.messageCounter = messageCounter;
+		this.messageCount = messageCount;
 	}
 
 	@Override
 	public void run() {
-		try {
-			
-			Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
-		} catch (Exception e) {
-			handleException(e);
-		}
 
 		try {
-			sendMessage();
+			for (int i = 0; i < messageCount; i++) {
+				Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
+				String content = PropertyReader.getMessageContent() + "(" + i
+						+ ")";
+
+				sender.sendMessage(content);
+			}
 		} catch (Exception e) {
 			handleException(e);
 		} finally {
@@ -69,15 +64,6 @@ public class WriterWorker implements Runnable {
 			}
 		}
 
-	}
-
-	private void sendMessage() throws Exception, NamingException,
-			JMSException {
-
-		int count = PropertyReader.getTotalMessageCount();
-		String content = PropertyReader.getMessageContent()	+ "(" + messageCounter + ")";
-
-		sender.sendMessage(count, content);
 	}
 
 	private void handleException(Exception e) {
