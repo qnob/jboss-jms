@@ -4,7 +4,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ReaderRunner {
-	private static final int INTERVAL_IN_MILLISECONDS = 1000;
 
 	/**
 	 * @param args

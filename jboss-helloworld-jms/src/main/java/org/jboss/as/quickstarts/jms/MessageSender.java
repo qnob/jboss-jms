@@ -20,7 +20,8 @@ public class MessageSender {
 	}
 	
 	public void sendMessage(int count, String content) throws JMSException {
-		log.info("Sending " + count + " messages with content: " + content);
+		String currentThreadName = Thread.currentThread().getName();
+		log.info(currentThreadName + " : Sending " + count + " messages with content: " + content);
 
 		// Send the specified number of messages
 		for (int i = 0; i < count; i++) {

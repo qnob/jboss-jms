@@ -20,10 +20,11 @@ public class MessageReader {
 		// Then receive the same number of messages that were sent
 		for (int i = 0; i < count; i++) {
 			TextMessage message = (TextMessage) consumer.receive(5000);
+			String currentThreadName = Thread.currentThread().getName();
 			if (message == null) {
-				log.info("No message received within given timeout. Giving up!");
+				log.info(currentThreadName + " : No message received within given timeout. Giving up!");
 			} else {
-				log.info("Received message with content " + message.getText());
+				log.info(currentThreadName + " : Received message with content " + message.getText());
 			}
 		}
 	}
