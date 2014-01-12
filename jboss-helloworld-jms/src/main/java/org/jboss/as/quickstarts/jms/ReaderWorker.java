@@ -16,58 +16,68 @@
  */
 package org.jboss.as.quickstarts.jms;
 
+import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
-public class HelloWorldJMSClient {
-	private static final Logger log = Logger
-			.getLogger(HelloWorldJMSClient.class.getName());
+public class ReaderWorker implements Runnable {
+	private static final int MAX_RANDOM_WAIT_TIME = 5000;
 
-	// Set up all the default values
-	private static final String DEFAULT_MESSAGE = "Hello, World!";
+	private static final Logger log = Logger.getLogger(ReaderWorker.class
+			.getName());
+
 	private static final String DEFAULT_MESSAGE_COUNT = "1";
 
-	private MessageSender sender = null;
-	private MessageReader reader= null;
+	private MessageReader reader = null;
 
 	private JmsSession jmsSession = new JmsSession();
+	
+	private Random random = new Random();
+	
 
-	public static void main(String[] args) throws Exception {
-
-		HelloWorldJMSClient client = new HelloWorldJMSClient();
-		client.sendAndReceiveMessage();
+	public ReaderWorker() throws JMSException, NamingException {
+		this.jmsSession = new JmsSession();
+		this.jmsSession.setup();
+		this.reader = new MessageReader(jmsSession);
 	}
 
-	public void sendAndReceiveMessage() throws Exception, NamingException,
-			JMSException {
+	@Override
+	public void run() {
+		try {
+
+			Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
+		} catch (Exception e) {
+			handleException(e);
+		}
 
 		try {
-			int count = Integer.parseInt(System.getProperty("message.count",
-					DEFAULT_MESSAGE_COUNT));
-			String content = System.getProperty("message.content",
-					DEFAULT_MESSAGE);
-
-			jmsSession.setup();
-			sender = new MessageSender(jmsSession);
-			reader = new MessageReader(jmsSession);
-
-			sender.sendMessage(count, content);
-			//reader.readMessage(count);
+			readMessage();
 		} catch (Exception e) {
 			handleException(e);
 		} finally {
-			jmsSession.close();
+			try {
+				jmsSession.close();
+			} catch (Exception e) {
+				handleException(e);
+			}
 		}
+
 	}
 
-	private void handleException(Exception e) throws Exception {
-		log.severe(e.getMessage());
-		throw e;
+	private void readMessage() throws Exception, NamingException, JMSException {
+
+		int count = Integer.parseInt(System.getProperty("message.count",
+				DEFAULT_MESSAGE_COUNT));
+
+		reader.readMessage(count);
 	}
 
-
-
+	private void handleException(Exception e) {
+		log.log(Level.SEVERE, e.getMessage(), e);
+		
+	}
 
 }

@@ -30,13 +30,13 @@ public class JmsSession {
     private ConnectionFactory connectionFactory = null;
     private Connection connection = null;
     private Session session = null;
-    private MessageProducer producer = null;
-    private MessageConsumer consumer = null;
     private Destination destination = null;
-    private TextMessage message = null;
     private Context context = null;
 
 	public Session setup() throws NamingException, JMSException {
+		if(context == null) {
+			log.severe("JMS Session already initialized. Ignoring further setup method calls.");
+		}
 		// Set up the context for the JNDI lookup
 		final Properties env = new Properties();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
