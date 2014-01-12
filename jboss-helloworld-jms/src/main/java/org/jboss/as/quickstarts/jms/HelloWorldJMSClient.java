@@ -40,7 +40,7 @@ public class HelloWorldJMSClient {
 			JMSException {
 
 		try {
-			String content = PropertyReader.getMessageContent();
+			String content = ConfigurationReader.getMessageContent();
 
 			jmsSession.setup();
 			sender = new MessageSender(jmsSession);

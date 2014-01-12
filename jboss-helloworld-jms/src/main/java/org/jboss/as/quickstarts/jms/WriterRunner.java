@@ -2,6 +2,7 @@ package org.jboss.as.quickstarts.jms;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class WriterRunner {
@@ -11,7 +12,7 @@ public class WriterRunner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		int totalMessageCount = PropertyReader.getTotalMessageCount();
+		int totalMessageCount = ConfigurationReader.getTotalMessageCount();
 		ExecutorService executorService = Executors
 				.newSingleThreadExecutor(new WorkerThreadFactory("Writer"));
 
@@ -20,8 +21,10 @@ public class WriterRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		executorService.shutdown();
-		while (!executorService.isTerminated()) {
+		try {
+			executorService.awaitTermination(5, TimeUnit.MINUTES);
+		} catch (InterruptedException e1) {
+			log.severe("Reader threads interrupted after timeout.");
 		}
 		
 		log.info("Finished all threads");

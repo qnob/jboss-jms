@@ -49,7 +49,7 @@ public class WriterWorker implements Runnable {
 		try {
 			for (int i = 0; i < messageCount; i++) {
 				Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
-				String content = PropertyReader.getMessageContent() + "(" + i
+				String content = ConfigurationReader.getMessageContent() + "(" + i
 						+ ")";
 
 				sender.sendMessage(content);

@@ -1,9 +1,9 @@
 package org.jboss.as.quickstarts.jms;
 
-public class PropertyReader {
+public class ConfigurationReader {
 
 	private static final String DEFAULT_MESSAGE = "Hello, World!";
-	private static final int DEFAULT_MESSAGE_COUNT = 3;
+	private static final int DEFAULT_MESSAGE_COUNT = 30;
 
 	public static int get(String key, int defaultValue) {
 

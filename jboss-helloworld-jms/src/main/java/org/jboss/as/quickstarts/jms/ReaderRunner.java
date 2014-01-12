@@ -1,11 +1,9 @@
 package org.jboss.as.quickstarts.jms;
 
-import java.util.Enumeration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
-import javax.jms.QueueBrowser;
 
 public class ReaderRunner {
 
@@ -20,7 +18,7 @@ public class ReaderRunner {
 		ExecutorService executorService = Executors.newFixedThreadPool(5,
 				new WorkerThreadFactory("Reader"));
 
-		int totalMessageCount = PropertyReader.getTotalMessageCount();
+		int totalMessageCount = ConfigurationReader.getTotalMessageCount();
 		int threadMessageCount = totalMessageCount / NB_OF_READER_THREADS;
 
 		for (int i = 0; i < NB_OF_READER_THREADS; i++) {
@@ -31,23 +29,18 @@ public class ReaderRunner {
 				e.printStackTrace();
 			}
 		}
-		executorService.shutdown();
-		while (!executorService.isTerminated()) {
+		try {
+			executorService.awaitTermination(5, TimeUnit.MINUTES);
+		} catch (InterruptedException e1) {
+			log.severe("Reader threads interrupted after timeout.");
 		}
 		log.info("Finished all threads");
 
 		JmsSession jmsSession = new JmsSession();
 		try {
 			jmsSession.setup();
-			QueueBrowser queueBrowser = jmsSession.createQueueBrowser();
-
-			@SuppressWarnings({ "rawtypes" })
-			Enumeration messagesInQueue = queueBrowser.getEnumeration();
-			int remainingMessagesCount = 0;
-			while (messagesInQueue.hasMoreElements()) {
-				messagesInQueue.nextElement();
-				remainingMessagesCount++;
-			}
+			MessageBrowser browser = new MessageBrowser(jmsSession);
+			int remainingMessagesCount = browser.getMessageCount();
 
 			if (remainingMessagesCount > 0) {
 				log.severe("There are '" + remainingMessagesCount

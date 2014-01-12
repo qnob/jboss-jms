@@ -24,7 +24,7 @@ import javax.jms.JMSException;
 import javax.naming.NamingException;
 
 public class ReaderWorker implements Runnable {
-	private static final int MAX_RANDOM_WAIT_TIME = 5000;
+	private static final int MAX_RANDOM_WAIT_TIME = 10;
 
 	private static final Logger log = Logger.getLogger(ReaderWorker.class
 			.getName());
