@@ -14,33 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.as.quickstarts.jms;
+package org.jboss.as.quickstarts.jms.worker;
 
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
-public class ReaderWorker implements Runnable {
-	private static final int MAX_RANDOM_WAIT_TIME = 10;
+import org.jboss.as.quickstarts.jms.ConfigurationReader;
+import org.jboss.as.quickstarts.jms.core.JmsSession;
+import org.jboss.as.quickstarts.jms.core.MessageSender;
 
-	private static final Logger log = Logger.getLogger(ReaderWorker.class
+public class WriterWorker implements Runnable {
+	private static final int MAX_RANDOM_WAIT_TIME = 100;
+
+	private static final Logger log = Logger.getLogger(WriterWorker.class
 			.getName());
 
-	private MessageReader reader = null;
+	private MessageSender sender = null;
 
 	private JmsSession jmsSession = new JmsSession();
 
-	private Random random = new Random();
-
 	private int messageCount;
 
-	public ReaderWorker(int messageCount) throws JMSException, NamingException {
+	private Random random = new Random();
+
+	public WriterWorker(int messageCount) throws JMSException, NamingException {
 		this.jmsSession = new JmsSession();
-		this.jmsSession.setup();
-		this.reader = new MessageReader(jmsSession);
+		jmsSession.setup();
+		this.sender = new MessageSender(jmsSession);
 		this.messageCount = messageCount;
 	}
 
@@ -50,7 +53,10 @@ public class ReaderWorker implements Runnable {
 		try {
 			for (int i = 0; i < messageCount; i++) {
 				Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
-				reader.readMessage();
+				String content = ConfigurationReader.getMessageContent() + "(" + i
+						+ ")";
+
+				sender.sendMessage(content);
 			}
 		} catch (Exception e) {
 			handleException(e);
@@ -65,8 +71,7 @@ public class ReaderWorker implements Runnable {
 	}
 
 	private void handleException(Exception e) {
-		log.log(Level.SEVERE, e.getMessage(), e);
-
+		log.severe(e.getMessage());
 	}
 
 }

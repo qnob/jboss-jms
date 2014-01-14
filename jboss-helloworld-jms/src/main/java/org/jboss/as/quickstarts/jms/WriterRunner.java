@@ -5,6 +5,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.jboss.as.quickstarts.jms.worker.WorkerThreadFactory;
+import org.jboss.as.quickstarts.jms.worker.WriterWorker;
+
 public class WriterRunner {
 	private static final Logger log = Logger.getLogger(WriterRunner.class
 			.getName());

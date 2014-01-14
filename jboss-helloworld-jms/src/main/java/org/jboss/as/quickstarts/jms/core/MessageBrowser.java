@@ -1,4 +1,4 @@
-package org.jboss.as.quickstarts.jms;
+package org.jboss.as.quickstarts.jms.core;
 
 import java.util.Enumeration;
 import java.util.logging.Logger;

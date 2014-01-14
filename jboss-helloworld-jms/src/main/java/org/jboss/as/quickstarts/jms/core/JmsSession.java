@@ -1,4 +1,4 @@
-package org.jboss.as.quickstarts.jms;
+package org.jboss.as.quickstarts.jms.core;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -16,6 +16,8 @@ import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.jboss.as.quickstarts.jms.HelloWorldJMSClient;
 
 public class JmsSession {
 

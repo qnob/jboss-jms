@@ -21,6 +21,10 @@ import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
+import org.jboss.as.quickstarts.jms.core.JmsSession;
+import org.jboss.as.quickstarts.jms.core.MessageReader;
+import org.jboss.as.quickstarts.jms.core.MessageSender;
+
 public class HelloWorldJMSClient {
 	private static final Logger log = Logger
 			.getLogger(HelloWorldJMSClient.class.getName());

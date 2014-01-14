@@ -1,4 +1,4 @@
-package org.jboss.as.quickstarts.jms;
+package org.jboss.as.quickstarts.jms.core;
 
 import java.util.logging.Logger;
 
@@ -18,7 +18,7 @@ public class MessageReader {
 
 	public void readMessage() throws JMSException {
 		// Then receive the same number of messages that were sent
-			TextMessage message = (TextMessage) consumer.receive(5000);
+			TextMessage message = (TextMessage) consumer.receive(1000);
 			String currentThreadName = Thread.currentThread().getName();
 			if (message == null) {
 				log.info(currentThreadName + " : No message received within given timeout. Giving up!");

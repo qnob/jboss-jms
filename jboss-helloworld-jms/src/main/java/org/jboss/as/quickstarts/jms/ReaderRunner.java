@@ -5,6 +5,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.jboss.as.quickstarts.jms.core.JmsSession;
+import org.jboss.as.quickstarts.jms.core.MessageBrowser;
+import org.jboss.as.quickstarts.jms.worker.ReaderWorker;
+import org.jboss.as.quickstarts.jms.worker.WorkerThreadFactory;
+
 public class ReaderRunner {
 
 	private static final int NB_OF_READER_THREADS = 3;

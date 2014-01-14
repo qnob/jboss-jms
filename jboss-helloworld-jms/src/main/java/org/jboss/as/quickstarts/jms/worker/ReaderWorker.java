@@ -14,32 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.as.quickstarts.jms;
+package org.jboss.as.quickstarts.jms.worker;
 
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
 
-public class WriterWorker implements Runnable {
-	private static final int MAX_RANDOM_WAIT_TIME = 100;
+import org.jboss.as.quickstarts.jms.core.JmsSession;
+import org.jboss.as.quickstarts.jms.core.MessageReader;
 
-	private static final Logger log = Logger.getLogger(WriterWorker.class
+public class ReaderWorker implements Runnable {
+	private static final int MAX_RANDOM_WAIT_TIME = 10;
+
+	private static final Logger log = Logger.getLogger(ReaderWorker.class
 			.getName());
 
-	private MessageSender sender = null;
+	private MessageReader reader = null;
 
 	private JmsSession jmsSession = new JmsSession();
 
-	private int messageCount;
-
 	private Random random = new Random();
 
-	public WriterWorker(int messageCount) throws JMSException, NamingException {
+	private int messageCount;
+
+	public ReaderWorker(int messageCount) throws JMSException, NamingException {
 		this.jmsSession = new JmsSession();
-		jmsSession.setup();
-		this.sender = new MessageSender(jmsSession);
+		this.jmsSession.setup();
+		this.reader = new MessageReader(jmsSession);
 		this.messageCount = messageCount;
 	}
 
@@ -49,10 +53,7 @@ public class WriterWorker implements Runnable {
 		try {
 			for (int i = 0; i < messageCount; i++) {
 				Thread.sleep(random.nextInt(MAX_RANDOM_WAIT_TIME));
-				String content = ConfigurationReader.getMessageContent() + "(" + i
-						+ ")";
-
-				sender.sendMessage(content);
+				reader.readMessage();
 			}
 		} catch (Exception e) {
 			handleException(e);
@@ -67,7 +68,8 @@ public class WriterWorker implements Runnable {
 	}
 
 	private void handleException(Exception e) {
-		log.severe(e.getMessage());
+		log.log(Level.SEVERE, e.getMessage(), e);
+
 	}
 
 }
